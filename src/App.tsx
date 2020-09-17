@@ -4,6 +4,8 @@ import "./App.css";
 import NavBarApp from "./components/ui-components/header/";
 import AppRouter from "./components/containers/appRouter";
 import { BrowserRouter as Router } from "react-router-dom";
+import {reducer} from "reducer"
+import {starsReducer} from "reducer/starsreducer"
 
 const initialState = {
   meals: [],
@@ -12,27 +14,22 @@ const initialState = {
   lastOrderTime: "220-07-01",
   anotherConfigurationOption: { startsColor: "red" },
 };
+
 interface IConfig {
   starsColor: string;
 }
 export const MealsContext: any = React.createContext(null);
 export const ConfigurationContext: any = React.createContext(null);
 
-const reducer: any = (state: any, action: any) => {
-  if (action.type == "add") {
-    return { ...state, orders: [...state.orders, action.payload] };
-  }
 
-  if (action.type == "revive") {
-    return state;
-  }
-  return state;
-};
 
 function App() {
+
   const [mealsState, dispatch] = useReducer(reducer, initialState);
+  console.log(mealsState)
   const initialConfigurationState = { starsColor: "red" };
-  const [getConfig, setConfig] = useState(initialConfigurationState);
+
+  const [getConfig, setConfig] = useReducer(starsReducer,initialConfigurationState);
 
   return (
     <Router>

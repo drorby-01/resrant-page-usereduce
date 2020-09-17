@@ -6,7 +6,7 @@ export default function ConfigurationPage() {
   const [getConfig, setConfig] = useContext(ConfigurationContext);
 
   function onColorChange(color: string): void {
-    setConfig({ ...getConfig, starsColor: color });
+    setConfig(color);
   }
 
   const configButtonsColor = [
@@ -36,6 +36,7 @@ export default function ConfigurationPage() {
       <Button
         onClick={() => {
           onColorChange(color);
+
         }}
         variant="primary"
         size="lg"

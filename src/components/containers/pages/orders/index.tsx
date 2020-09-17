@@ -1,13 +1,17 @@
-import React, { useContext } from "react";
+import React, { useContext,useEffect } from "react";
 import { MealsContext } from "App";
 import Meal, { IMeal } from "components/ui-components/meal";
 import Badge from "react-bootstrap/Badge";
 import Button from "react-bootstrap/Button";
+import { Trash2 } from "react-bootstrap-icons";
 
 export default function OrdersPage() {
-  const [state, setState] = useContext(MealsContext);
+  const [state, dispach] = useContext(MealsContext);
   const { orders } = state;
+
+    
   function getTotalCal() {
+    console.log(orders)
     const total = orders.reduce((total: number, order: any) => {
       console.log(parseInt(order.calories));
       if (isNaN(parseInt(order.calories))) return total;
@@ -15,13 +19,7 @@ export default function OrdersPage() {
     }, 0);
     return total;
   }
-
-  function removeMeal(meal: IMeal) {
-    const ordersWithoutDeleteMeal = orders.filter(
-      (order: IMeal) => order.name !== meal.name
-    );
-    setState({ ...state, orders: ordersWithoutDeleteMeal });
-  }
+  
   return (
     <div>
       <h1 className="jumbotron"> Orders </h1>
@@ -36,7 +34,7 @@ export default function OrdersPage() {
           <Button
             className={"pull-right"}
             onClick={() => {
-              setState({ ...state, orders: [] });
+              dispach({type:"deleteAll"})
             }}
             variant="danger"
             size="lg"
@@ -51,13 +49,29 @@ export default function OrdersPage() {
           return (
             <Meal
               {...meal}
-              cls="danger"
-              actionTitle="Remove"
-              action={removeMeal}
+              
+              actionComponent={<RemoveFromCartButton meal={meal} cls="danger"/>}
             />
           );
         })}
       </div>
     </div>
+  );
+}
+
+
+function RemoveFromCartButton(props: any) {
+  const [state , dispach] = useContext(MealsContext);
+  const {orders} = state
+  function removeMeal(meal: IMeal) {
+    const ordersWithoutDeleteMeal = orders.filter(
+      (order: IMeal) => order.name !== meal.name
+    );
+    dispach({type:"delteMeal",payload:{orders:ordersWithoutDeleteMeal}})
+  }
+  return (
+    <Button variant={props.cls || "primary"} onClick={()=>removeMeal(props.meal)}>
+      <Trash2 />
+    </Button>
   );
 }
